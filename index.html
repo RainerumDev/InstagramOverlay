@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+    </head>
+    <body>
+        <div id="resizer-demo"></div>
+        <script>
+            var el = document.getElementById('resizer-demo');
+            var resize = new Croppie(el, {
+                viewport: { width: 1080, height: 1080 },
+                boundary: { width: 1080, height: 1080 },
+                showZoomer: false,
+                enableResize: false,
+                enableOrientation: true,
+                mouseWheelZoom: 'ctrl'
+            });
+            resize.bind({
+                url: 'img.jpg',
+            });    
+            
+            $('#resizer-demo').on('update.croppie', (ev) => {
+                console.log(ev.detail);
+                var ctx = $('#resizer-demo .cr-boundary').find('canvas')[0].getContext("2d");
+                points = ev.detail.points;
+                
+                var img = new Image;
+                img.onload = function() {
+                    ctx.drawImage(this, points[0], points[1], points[2]-points[0], points[3]-points[1]);
+                };
+                img.src = "overlay.png";
+                //download();
+            })
+
+            var download = function(){
+                var link = document.createElement('a');
+                link.download = 'filename.png';
+                link.href = $('#resizer-demo .cr-boundary').find('canvas')[0].toDataURL()
+                link.click();
+            }
+
+           
+        </script>
+    </body>
+</html>
+
